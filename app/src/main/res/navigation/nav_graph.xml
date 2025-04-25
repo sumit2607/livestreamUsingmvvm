@@ -1,0 +1,33 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/liveStreamsListFragment">
+
+    <!-- LiveStreamsListFragment -->
+    <fragment
+        android:id="@+id/liveStreamsListFragment"
+        android:name="com.example.livestreamusingmvvm.ui.LiveStreamsListFragment"
+        android:label="Live Streams"
+        tools:layout="@layout/fragment_live_streams_list">
+        <action
+            android:id="@+id/action_play_stream"
+            app:destination="@id/liveStreamPlayerFragment">
+            <argument
+                android:name="streamId"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <!-- LiveStreamPlayerFragment -->
+    <fragment
+        android:id="@+id/liveStreamPlayerFragment"
+        android:name="com.example.livestreamusingmvvm.ui.LiveStreamPlayerFragment"
+        android:label="Live Stream Player"
+        tools:layout="@layout/fragment_live_stream_player">
+        <argument
+            android:name="streamId"
+            app:argType="string" />
+    </fragment>
+
+</navigation>
