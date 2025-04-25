@@ -5,9 +5,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.livestreamusingmvvm.databinding.ActivityMainBinding
 import com.example.livestreamusingmvvm.ui.LiveStreamPlayerFragment
 import com.example.livestreamusingmvvm.ui.LiveStreamsListFragment
-import com.example.livestreamusingmvvm.databinding.ActivityMainBinding  // Import the generated ViewBinding class
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,8 +19,6 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize the ViewBinding object
         binding = ActivityMainBinding.inflate(layoutInflater)
-
-        // Set the content view using the binding
         setContentView(binding.root)
 
         // Enable edge-to-edge layout (this method is assumed to be defined elsewhere in your code)

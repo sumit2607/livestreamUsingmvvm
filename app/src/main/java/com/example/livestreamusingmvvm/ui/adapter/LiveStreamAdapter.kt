@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.livestreamusingmvvm.databinding.ItemLiveStreamBinding
 import com.example.livestreamusingmvvm.remote.LiveStream
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
+
 
 
 class LiveStreamAdapter(private val onClick: (LiveStream) -> Unit) :
@@ -31,22 +30,22 @@ class LiveStreamAdapter(private val onClick: (LiveStream) -> Unit) :
     inner class LiveStreamViewHolder(private val binding: ItemLiveStreamBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val context = itemView.context
-        private var player: SimpleExoPlayer? = null
+     //   private var player: SimpleExoPlayer? = null
 
         fun bind(stream: LiveStream) {
             // Set stream title and status using View Binding
-            binding.streamTitle.text = stream.role
-            binding.streamStatus.text = stream.type
+            binding.nameTv.text = stream.streamId
+            binding.statusTv.text = stream.status
 
-            // Initialize ExoPlayer for the video preview
-            player = SimpleExoPlayer.Builder(context).build()
-            binding.playerView.player = player
-
-            // Set the video URL for the preview (stream URL or RTMP URL)
-            val mediaItem = MediaItem.fromUri(stream.rtmpURL)
-            Log.d("TAG", "binddsdsdd: "  + "here in line no " + stream.rtmpURL)
-            player?.setMediaItem(mediaItem)
-            player?.prepare()
+//            // Initialize ExoPlayer for the video preview
+//            player = SimpleExoPlayer.Builder(context).build()
+//            binding.playerView.player = player
+//
+//            // Set the video URL for the preview (stream URL or RTMP URL)
+//            val mediaItem = MediaItem.fromUri(stream.rtmpURL)
+//            Log.d("TAG", "binddsdsdd: "  + "here in line no " + stream.rtmpURL)
+//            player?.setMediaItem(mediaItem)
+//            player?.prepare()
 
             // Set the Play button click listener
             binding.playButton.setOnClickListener {
@@ -55,9 +54,9 @@ class LiveStreamAdapter(private val onClick: (LiveStream) -> Unit) :
             }
 
             // Handle lifecycle events for ExoPlayer (Release when view is destroyed)
-            itemView.setOnDetachFromWindowListener {
-                player?.release()
-            }
+//            itemView.setOnDetachFromWindowListener {
+//                player?.release()
+//            }
         }
 
         private fun View.setOnDetachFromWindowListener(onDetach: () -> Unit) {
