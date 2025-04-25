@@ -40,7 +40,7 @@ class LiveStreamsListFragment : Fragment() {
         liveStreamViewModel = ViewModelProvider(this, factory).get(LiveStreamViewModel::class.java)
 
         // Set up RecyclerView with the adapter
-        liveStreamAdapter = LiveStreamAdapter { stream ->
+        liveStreamAdapter = LiveStreamAdapter(requireContext()) { stream ->
             val streamId = stream.streamId
 
             // Create a new instance of the LiveStreamPlayerFragment

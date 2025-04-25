@@ -1,18 +1,21 @@
 package com.example.livestreamusingmvvm.ui.adapter
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.livestreamusingmvvm.databinding.ItemLiveStreamBinding
 import com.example.livestreamusingmvvm.remote.LiveStream
+import com.example.livestreamusingmvvm.ui.LiveStreamPlayerActivity
 
 
-
-class LiveStreamAdapter(private val onClick: (LiveStream) -> Unit) :
+class LiveStreamAdapter(private var mContext :  Context, private val onClick: (LiveStream) -> Unit) :
     ListAdapter<LiveStream, LiveStreamAdapter.LiveStreamViewHolder>(LiveStreamDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LiveStreamViewHolder {
@@ -50,13 +53,16 @@ class LiveStreamAdapter(private val onClick: (LiveStream) -> Unit) :
             // Set the Play button click listener
             binding.playButton.setOnClickListener {
                 // Pass the stream to the onClick listener to handle playback
-                onClick(stream)
+               // onClick(stream)
+                val intent = Intent(mContext, LiveStreamPlayerActivity::class.java)
+                intent.putExtra("streamId", "your_stream_id") // Pass streamId
+                mContext.startActivity(intent)
             }
 
             // Handle lifecycle events for ExoPlayer (Release when view is destroyed)
-//            itemView.setOnDetachFromWindowListener {
-//                player?.release()
-//            }
+            itemView.setOnDetachFromWindowListener {
+
+            }
         }
 
         private fun View.setOnDetachFromWindowListener(onDetach: () -> Unit) {
