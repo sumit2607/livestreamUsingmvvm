@@ -27,6 +27,16 @@
         android:theme="@style/Theme.LivestreamUsingmvvm"
         tools:targetApi="31">
         <activity
+            android:name=".ui.view.ui.ui.LiveStreamPlayerComposeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_live_stream_player_compose"
+            android:theme="@style/Theme.LivestreamUsingmvvm" />
+        <activity
+            android:name=".ui.view.ui.ui.GoLiveActivityCompose"
+            android:exported="false"
+            android:label="@string/title_activity_go_live_compose"
+            android:theme="@style/Theme.LivestreamUsingmvvm" />
+        <activity
             android:name=".ui.view.LiveStreamPlayerActivity"
             android:exported="false"
             android:theme="@style/Theme.LivestreamUsingmvvm" />
@@ -34,7 +44,6 @@
             android:name=".ui.view.PublishStreamActivity"
             android:exported="false"
             android:theme="@style/Theme.LivestreamUsingmvvm" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">

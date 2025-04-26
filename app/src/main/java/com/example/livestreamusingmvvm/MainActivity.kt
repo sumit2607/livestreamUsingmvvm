@@ -1,46 +1,164 @@
 package com.example.livestreamusingmvvm
 
-import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.livestreamusingmvvm.databinding.ActivityMainBinding
-import com.example.livestreamusingmvvm.ui.view.LiveStreamsListFragment
-import com.example.livestreamusingmvvm.ui.view.PublishStreamActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.core.view.WindowCompat
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.livestreamusingmvvm.network.NetworkModule
+import com.example.livestreamusingmvvm.repository.LiveStreamRepository
+import com.example.livestreamusingmvvm.ui.viewmodel.LiveStreamViewModel
 
-class MainActivity : AppCompatActivity() {
+import android.content.Intent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.*
+import com.example.livestreamusingmvvm.model.LiveStream
+import com.example.livestreamusingmvvm.ui.view.LiveStreamPlayerActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.CircularProgressIndicator
 
-    // Declare the ViewBinding variable
-    private lateinit var binding: ActivityMainBinding
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize the ViewBinding object
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        // Enable edge-to-edge layout (this method is assumed to be defined elsewhere in your code)
         enableEdgeToEdge()
 
-        // Apply window insets to adjust padding
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        setContent {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(
+                        WindowInsets.systemBars
+                            .asPaddingValues()
+                    )
+            ) {
+                LiveStreamsListScreen()
+            }
         }
-
-        // Create a new instance of the LiveStreamPlayerFragment
-        val fragment = LiveStreamsListFragment()
-
-        // Open the new fragment (replace the current one)
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.navhostfragment, fragment)  // Replace with the container ID
-//            .addToBackStack(null)  // Add to back stack to enable back navigation
-//            .commit()
-        val intent = Intent(this, PublishStreamActivity::class.java)
-        startActivity(intent)
     }
 }
+
+@Composable
+fun LiveStreamsListScreen() {
+    val context = LocalContext.current
+
+    val viewModel: LiveStreamViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val repo = LiveStreamRepository(NetworkModule.apiService)
+                @Suppress("UNCHECKED_CAST")
+                return LiveStreamViewModel(repo) as T
+            }
+        }
+    )
+
+    val liveStreams by viewModel.liveStreams.observeAsState(emptyList())
+    val errorState by viewModel.errorState.observeAsState("")
+    val loadingState by viewModel.loadingState.observeAsState(false)
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchLiveStreams()
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column {
+            if (errorState.isNotEmpty()) {
+                Text(
+                    text = errorState,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+            }
+
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(liveStreams ?: emptyList()) { stream ->
+                    LiveStreamItem(stream = stream)
+                }
+
+            }
+        }
+
+        if (loadingState) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
+}
+
+@Composable
+fun LiveStreamItem(stream: LiveStream) {
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFF0F0F0))
+            .padding(10.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.liveshow),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(9f / 16f),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = stream.streamId, fontWeight = FontWeight.Bold)
+        Text(text = stream.status, color = Color.DarkGray)
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Button(
+            onClick = {
+                val intent = Intent(context, LiveStreamPlayerActivity::class.java)
+                intent.putExtra("streamId", stream.streamId)
+                context.startActivity(intent)
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "Play")
+        }
+    }
+}
+
+
