@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm
+package com.example.livestreamusingmvvm.application
 
 
 import android.app.Application
