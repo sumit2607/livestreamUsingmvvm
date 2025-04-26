@@ -17,20 +17,26 @@ import io.antmedia.webrtcandroidframework.api.IWebRTCClient
 import io.antmedia.webrtcandroidframework.core.WebRTCClient
 import org.webrtc.SurfaceViewRenderer
 import android.Manifest
+import android.app.Activity
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material.icons.filled.VideocamOff
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.livestreamusingmvvm.ui.view.ui.theme.LivestreamUsingmvvmTheme
 
 
@@ -150,6 +156,7 @@ class GoLiveActivityCompose : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoLiveScreen(
     surfaceViewRenderer: SurfaceViewRenderer,
@@ -161,93 +168,164 @@ fun GoLiveScreen(
     onMuteClick: () -> Unit,
     onStopVideoClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    var chatMessage by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        // Camera Preview (always visible)
+        // Camera Preview
         AndroidView(
             factory = { surfaceViewRenderer },
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
 
-        // Stop Streaming Button at Top Right Corner with Rounded Background
-        Box(
+        // --- Top Left: User Info ---
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "User Icon",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray)
+                    .padding(8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Sumit Rai",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "You are Live",
+                color = Color.Red,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp
+            )
+        }
+
+        // --- Top Right: Watching Count + Close Button ---
+        Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(16.dp)  // Adds some margin from the top and right edges
-                .background(
-                    color = Color.Black.copy(alpha = 0.5f),  // Semi-transparent background
-                    shape = RoundedCornerShape(50)  // Rounded corners
-                )
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = onStopClick,
+            // User Count Text with background from drawable
+            Text(
+                text = "200 Watching",
+                color = Color.White,
+                fontSize = 14.sp,
                 modifier = Modifier
-                    .size(50.dp)  // Make the button large enough for the rounded background
+                    .background(
+                        color = Color(0xB0F12121), // 50% Black
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            )
+
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            IconButton(
+                onClick = {
+                    onStopClick() // Call to stop streaming
+                    if (context is Activity) {
+                        context.finish() // Close the current activity
+                    }
+                },
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(Color.Black.copy(alpha = 0.5f), CircleShape)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Close,  // Default cross icon
+                    imageVector = Icons.Default.Close,
                     contentDescription = "Stop Streaming",
-                    tint = Color.White,  // White color for the icon
-                    modifier = Modifier.size(24.dp)  // Set the icon size
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
 
-        // Floating Control Buttons aligned to the right middle
+        // --- Middle Right: Audio and Video Controls ---
         Column(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)  // Space between buttons
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Mute and Stop Video Buttons
-            Row(
+            IconButton(
+                onClick = onMuteClick,
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center  // Center the buttons horizontally
+                    .size(60.dp)
+                    .background(Color.Black.copy(alpha = 0.7f), CircleShape)
             ) {
-                // Mute Button
-                IconButton(
-                    onClick = onMuteClick,
-                    modifier = Modifier
-                        .size(60.dp)
-                        .background(
-                            color = Color.Black.copy(alpha = 0.7f),
-                            shape = RoundedCornerShape(50)  // Rounded button
-                        )
-                ) {
-                    Icon(
-                        imageVector = if (isAudioMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
-                        contentDescription = "Mute/Unmute Audio",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
-                // Stop Video Button
-                IconButton(
-                    onClick = onStopVideoClick,
-                    modifier = Modifier
-                        .size(60.dp)
-                        .background(
-                            color = Color.Black.copy(alpha = 0.7f),
-                            shape = RoundedCornerShape(50)  // Rounded button
-                        )
-                ) {
-                    Icon(
-                        imageVector = if (isVideoStopped) Icons.Default.VideocamOff else Icons.Default.Videocam,
-                        contentDescription = "Stop/Start Video",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                Icon(
+                    imageVector = if (isAudioMuted) Icons.Filled.VolumeOff else Icons.Filled.VolumeUp,
+                    contentDescription = "Mute/Unmute Audio",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
+                )
             }
 
-            // Status Text
+            IconButton(
+                onClick = onStopVideoClick,
+                modifier = Modifier
+                    .size(60.dp)
+                    .background(Color.Black.copy(alpha = 0.7f), CircleShape)
+            ) {
+                Icon(
+                    imageVector = if (isVideoStopped) Icons.Filled.VideocamOff else Icons.Filled.Videocam,
+                    contentDescription = "Stop/Start Video",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+        }
+
+        // --- Bottom Chat Field ---
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+                .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(25.dp))
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextField(
+                value = chatMessage,
+                onValueChange = { chatMessage = it },
+                placeholder = { Text("Type and say hi to followers", color = Color.White.copy(alpha = 0.5f)) },
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.Transparent,
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor =  Color.White
+                ),
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        // --- Status Text ---
+        if (isAudioMuted || isVideoStopped) {
             Text(
                 text = when {
                     isAudioMuted && isVideoStopped -> "Audio Muted & Camera Stopped"
@@ -256,12 +334,17 @@ fun GoLiveScreen(
                     else -> ""
                 },
                 color = Color.White,
-                modifier = Modifier.fillMaxWidth(),
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 70.dp),
                 textAlign = TextAlign.Center
             )
         }
     }
 }
+
+
 
 
 
