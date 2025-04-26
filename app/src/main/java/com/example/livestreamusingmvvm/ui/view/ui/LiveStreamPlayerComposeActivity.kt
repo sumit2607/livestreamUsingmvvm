@@ -283,7 +283,7 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
                 .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")
                 .build()
 
-            webRTCClient?.play("streamId_lmhdVQiRR")
+            webRTCClient?.play("stream1")
             startStreamMonitoring(context)
         }
     }
@@ -304,7 +304,7 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
     }
 
     private fun stopStreamAndFinish(context: Context) {
-        webRTCClient?.stop("streamId_lmhdVQiRR")
+        webRTCClient?.stop("stream1")
         Toast.makeText(context, "Live show ended by author", Toast.LENGTH_SHORT).show()
         finish()
     }
