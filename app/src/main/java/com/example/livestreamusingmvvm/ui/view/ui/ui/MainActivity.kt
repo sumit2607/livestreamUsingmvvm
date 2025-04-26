@@ -22,6 +22,7 @@ import com.example.livestreamusingmvvm.repository.LiveStreamRepository
 import com.example.livestreamusingmvvm.ui.viewmodel.LiveStreamViewModel
 
 import android.content.Intent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,10 +38,12 @@ import androidx.compose.ui.unit.dp
 import com.example.livestreamusingmvvm.model.LiveStream
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.livestreamusingmvvm.R
-
+import dagger.hilt.android.AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
+    private val viewModel: LiveStreamViewModel by viewModels() // Automatically injected by Hilt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,29 +66,23 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LiveStreamsListScreen() {
-    val context = LocalContext.current
 
-    val viewModel: LiveStreamViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val repo = LiveStreamRepository(NetworkModule.apiService)
-                @Suppress("UNCHECKED_CAST")
-                return LiveStreamViewModel(repo) as T
-            }
-        }
-    )
+fun LiveStreamsListScreen() {
+    // Get the viewModel using Hilt's viewModels delegate
+    val viewModel: LiveStreamViewModel = hiltViewModel()
 
     val liveStreams by viewModel.liveStreams.observeAsState(emptyList())
     val errorState by viewModel.errorState.observeAsState("")
     val loadingState by viewModel.loadingState.observeAsState(false)
 
     LaunchedEffect(Unit) {
+        // Fetch the live streams when the screen is launched
         viewModel.fetchLiveStreams()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
+            // Show error message if there's any
             if (errorState.isNotEmpty()) {
                 Text(
                     text = errorState,
@@ -96,14 +93,15 @@ fun LiveStreamsListScreen() {
                 )
             }
 
+            // Display the list of live streams
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(liveStreams ?: emptyList()) { stream ->
                     LiveStreamItem(stream = stream)
                 }
-
             }
         }
 
+        // Show loading indicator if the state is true
         if (loadingState) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center)
@@ -111,6 +109,7 @@ fun LiveStreamsListScreen() {
         }
     }
 }
+
 
 @Composable
 fun LiveStreamItem(stream: LiveStream) {

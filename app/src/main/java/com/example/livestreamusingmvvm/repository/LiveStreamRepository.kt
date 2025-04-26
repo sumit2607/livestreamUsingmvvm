@@ -2,7 +2,16 @@ package com.example.livestreamusingmvvm.repository
 
 import com.example.livestreamusingmvvm.network.AntMediaApiService
 import com.example.livestreamusingmvvm.model.LiveStream
-class LiveStreamRepository(private val apiService: AntMediaApiService) {
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Inject
+
+@Module
+@InstallIn(SingletonComponent::class)
+class LiveStreamRepository @Inject constructor(
+    private val apiService: AntMediaApiService
+) {
 
     // Fetch live stream list
     suspend fun getLiveStreams(): List<LiveStream>? {

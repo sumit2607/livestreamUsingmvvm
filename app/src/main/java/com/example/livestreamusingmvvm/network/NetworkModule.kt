@@ -1,17 +1,31 @@
 package com.example.livestreamusingmvvm.network
 
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 // NetworkModule.kt (Optional if using Dependency Injection like Dagger or Hilt)
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
-    // Updated base URL with server address, port, and application name
-    private const val BASE_URL = "https://antmedia.workuplift.com:5443/WebRTCAppEE/"
 
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    @Provides
+    @Singleton
+    fun provideRetrofit(): Retrofit {
+        val baseUrl = "https://antmedia.workuplift.com:5443/WebRTCAppEE/" // Base URL
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
-    val apiService: AntMediaApiService = retrofit.create(AntMediaApiService::class.java)
+    @Provides
+    @Singleton
+    fun provideAntMediaApiService(retrofit: Retrofit): AntMediaApiService {
+        return retrofit.create(AntMediaApiService::class.java)
+    }
 }

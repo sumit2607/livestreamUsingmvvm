@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android") // Ensure this line is included
 }
 
 android {
@@ -93,8 +95,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("com.google.dagger:dagger:2.48")
+    kapt("com.google.dagger:dagger-compiler:2.48")
 
 
-
-
+    implementation("com.google.dagger:hilt-android:2.50")  // Directly reference the Hilt version
+    kapt("com.google.dagger:hilt-compiler:2.50")
+    // Hilt for Compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    kapt("androidx.hilt:hilt-compiler:1.1.0")
 }

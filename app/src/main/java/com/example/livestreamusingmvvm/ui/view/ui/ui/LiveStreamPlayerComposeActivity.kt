@@ -67,13 +67,13 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
 
             // Initialize the WebRTC client and start streaming
             webRTCClient!!.init()
-            webRTCClient!!.play("stream1")
+            webRTCClient!!.play("streamId_tPbb5lv5k")
         }
     }
 
     override fun onStop() {
         super.onStop()
         // Release WebRTCClient resources if needed
-        webRTCClient?.stop("stream1") // Assuming there's a release method
+        webRTCClient?.stop("streamId_tPbb5lv5k") // Assuming there's a release method
     }
 }

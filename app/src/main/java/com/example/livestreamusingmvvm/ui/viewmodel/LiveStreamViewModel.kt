@@ -6,9 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.livestreamusingmvvm.model.LiveStream
 import com.example.livestreamusingmvvm.repository.LiveStreamRepository
+import dagger.hilt.InstallIn
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LiveStreamViewModel(private val repository: LiveStreamRepository) : ViewModel() {
+
+@HiltViewModel
+class LiveStreamViewModel @Inject constructor(
+    private val repository: LiveStreamRepository
+) : ViewModel() {
 
     // Live streams list for the list fragment
     private val _liveStreams = MutableLiveData<List<LiveStream>?>()

@@ -1,5 +1,6 @@
 [versions]
 agp = "8.4.2"  # Use AGP 8.4.2 since it's compatible with your setup
+hiltAndroid = "2.50"
 kotlin = "1.9.0"
 coreKtx = "1.15.0"  # Downgrade to a compatible version of core-ktx
 junit = "4.13.2"
@@ -19,6 +20,8 @@ runtimeLivedata = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -44,3 +47,4 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hilt = { id = "dagger.hilt.android.plugin", version = "2.44" }  # Define the Hilt plugin version
