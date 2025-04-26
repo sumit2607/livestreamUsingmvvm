@@ -1,4 +1,5 @@
 package com.example.livestreamusingmvvm.utils
+
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -13,12 +14,13 @@ import com.example.livestreamusingmvvm.model.LiveStream
 import com.example.livestreamusingmvvm.ui.view.LiveStreamPlayerActivity
 
 
-class LiveStreamAdapter(private var mContext :  Context, private val onClick: (LiveStream) -> Unit) :
+class LiveStreamAdapter(private var mContext: Context, private val onClick: (LiveStream) -> Unit) :
     ListAdapter<LiveStream, LiveStreamAdapter.LiveStreamViewHolder>(LiveStreamDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LiveStreamViewHolder {
         // Inflate the item layout using View Binding
-        val binding = ItemLiveStreamBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemLiveStreamBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return LiveStreamViewHolder(binding)
     }
 
@@ -28,10 +30,11 @@ class LiveStreamAdapter(private var mContext :  Context, private val onClick: (L
         holder.bind(stream)
     }
 
-    inner class LiveStreamViewHolder(private val binding: ItemLiveStreamBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class LiveStreamViewHolder(private val binding: ItemLiveStreamBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         private val context = itemView.context
-     //   private var player: SimpleExoPlayer? = null
+        //   private var player: SimpleExoPlayer? = null
 
         fun bind(stream: LiveStream) {
             // Set stream title and status using View Binding
@@ -51,7 +54,7 @@ class LiveStreamAdapter(private var mContext :  Context, private val onClick: (L
             // Set the Play button click listener
             binding.playButton.setOnClickListener {
                 // Pass the stream to the onClick listener to handle playback
-               // onClick(stream)
+                // onClick(stream)
                 val intent = Intent(mContext, LiveStreamPlayerActivity::class.java)
                 intent.putExtra("streamId", "your_stream_id") // Pass streamId
                 mContext.startActivity(intent)
