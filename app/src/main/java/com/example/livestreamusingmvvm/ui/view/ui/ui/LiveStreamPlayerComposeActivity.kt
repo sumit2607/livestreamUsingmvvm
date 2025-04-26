@@ -1,6 +1,9 @@
 package com.example.livestreamusingmvvm.ui.view.ui.ui
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -20,6 +23,7 @@ import io.antmedia.webrtcandroidframework.core.WebRTCClient
 import org.webrtc.EglBase
 import org.webrtc.SurfaceViewRenderer
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -301,12 +305,48 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
                 .build()
 
             webRTCClient!!.init()
-            webRTCClient!!.play("streamId_fwoItPDuC")
+            webRTCClient!!.play("streamId_lmhdVQiRR")
+            // Listen for connection state or stream events
+            startStreamMonitoring(context)
+
         }
+
+
     }
+
+
+    // Periodically check if the stream is still playing or available
+    // Periodically check if the stream is still playing or available
+    private fun startStreamMonitoring(context: Context) {
+        val handler = Handler(Looper.getMainLooper())
+        val checkIntervalMillis: Long = 5000 // 5-second interval to check stream availability
+
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                // Check if the stream is available or if there's any error (e.g., stream not found)
+                if (webRTCClient == null || !webRTCClient!!.isStreaming("streamId_lmhdVQiRR")) { // Assuming isPlaying() checks if the stream is active
+                    stopStreamAndFinish(context) // If stream isn't playing, stop and finish
+                } else {
+                    handler.postDelayed(this, checkIntervalMillis) // Continue monitoring
+                }
+            }
+        }, checkIntervalMillis)
+    }
+
+
+    // Stop the stream and finish the activity
+    private fun stopStreamAndFinish(context :Context) {
+        // Stop the stream if it's running
+
+        webRTCClient?.stop("streamId_lmhdVQiRR")
+        Toast.makeText(context, "Live show ended by author", Toast.LENGTH_SHORT).show()
+        // Finish the activity
+        finish()
+    }
+
 
     override fun onStop() {
         super.onStop()
-        webRTCClient?.stop("streamId_fwoItPDuC")
+        webRTCClient?.stop("streamId_lmhdVQiRR")
     }
 }
