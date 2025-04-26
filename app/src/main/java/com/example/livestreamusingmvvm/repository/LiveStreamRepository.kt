@@ -1,7 +1,7 @@
-package com.example.livestreamusingmvvm.repo
+package com.example.livestreamusingmvvm.repository
 
-import com.example.livestreamusingmvvm.remote.AntMediaApiService
-import com.example.livestreamusingmvvm.remote.LiveStream
+import com.example.livestreamusingmvvm.network.AntMediaApiService
+import com.example.livestreamusingmvvm.model.LiveStream
 class LiveStreamRepository(private val apiService: AntMediaApiService) {
 
     // Fetch live stream list

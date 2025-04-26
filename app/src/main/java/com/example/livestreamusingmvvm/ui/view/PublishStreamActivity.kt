@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui
+package com.example.livestreamusingmvvm.ui.view
 
 import android.Manifest
 import android.os.Bundle
@@ -9,7 +9,6 @@ import com.example.livestreamusingmvvm.databinding.ActivityPublishViewBindingBin
 import io.antmedia.webrtcandroidframework.api.IWebRTCClient
 import io.antmedia.webrtcandroidframework.core.WebRTCClient
 import org.webrtc.EglBase
-import org.webrtc.SurfaceViewRenderer
 
 class PublishStreamActivity : AppCompatActivity() {
 

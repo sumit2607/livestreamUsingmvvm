@@ -7,9 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.livestreamusingmvvm.databinding.ActivityMainBinding
-import com.example.livestreamusingmvvm.ui.LiveStreamPlayerFragment
-import com.example.livestreamusingmvvm.ui.LiveStreamsListFragment
-import com.example.livestreamusingmvvm.ui.PublishStreamActivity
+import com.example.livestreamusingmvvm.ui.view.LiveStreamsListFragment
+import com.example.livestreamusingmvvm.ui.view.PublishStreamActivity
 
 class MainActivity : AppCompatActivity() {
 

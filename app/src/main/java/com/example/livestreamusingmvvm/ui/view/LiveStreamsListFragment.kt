@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui
+package com.example.livestreamusingmvvm.ui.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,15 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.livestreamusingmvvm.R
 import com.example.livestreamusingmvvm.databinding.FragmentLiveStreamsListBinding
-import com.example.livestreamusingmvvm.remote.NetworkModule
-import com.example.livestreamusingmvvm.repo.LiveStreamRepository
-import com.example.livestreamusingmvvm.ui.adapter.LiveStreamAdapter
-import com.example.livestreamusingmvvm.viewmodel.LiveStreamViewModel
-import com.example.livestreamusingmvvm.viewmodel.viewmodelfactory.LiveStreamViewModelFactory
+import com.example.livestreamusingmvvm.network.NetworkModule
+import com.example.livestreamusingmvvm.repository.LiveStreamRepository
+import com.example.livestreamusingmvvm.utils.LiveStreamAdapter
+import com.example.livestreamusingmvvm.ui.viewmodel.LiveStreamViewModel
+import com.example.livestreamusingmvvm.ui.viewmodel.viewmodelfactory.LiveStreamViewModelFactory
 
 class LiveStreamsListFragment : Fragment() {
 

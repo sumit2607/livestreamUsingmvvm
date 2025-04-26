@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.remote
+package com.example.livestreamusingmvvm.network
 
 
 object WebRTCServerInfo {

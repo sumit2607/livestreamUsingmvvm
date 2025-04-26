@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui
+package com.example.livestreamusingmvvm.ui.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.livestreamusingmvvm.databinding.FragmentLiveStreamPlayerBinding
-import com.example.livestreamusingmvvm.viewmodel.LiveStreamViewModel
+import com.example.livestreamusingmvvm.ui.viewmodel.LiveStreamViewModel
 
 class LiveStreamPlayerFragment : Fragment() {
 

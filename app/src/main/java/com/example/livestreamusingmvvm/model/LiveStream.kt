@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.remote
+package com.example.livestreamusingmvvm.model
 
 data class LiveStream(
     val streamId: String,                // Unique stream identifier

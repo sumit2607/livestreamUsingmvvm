@@ -1,18 +1,16 @@
-package com.example.livestreamusingmvvm.ui.adapter
+package com.example.livestreamusingmvvm.utils
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.livestreamusingmvvm.databinding.ItemLiveStreamBinding
-import com.example.livestreamusingmvvm.remote.LiveStream
-import com.example.livestreamusingmvvm.ui.LiveStreamPlayerActivity
+import com.example.livestreamusingmvvm.model.LiveStream
+import com.example.livestreamusingmvvm.ui.view.LiveStreamPlayerActivity
 
 
 class LiveStreamAdapter(private var mContext :  Context, private val onClick: (LiveStream) -> Unit) :

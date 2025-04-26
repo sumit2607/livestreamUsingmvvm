@@ -7,7 +7,7 @@
     <!-- LiveStreamsListFragment -->
     <fragment
         android:id="@+id/liveStreamsListFragment"
-        android:name="com.example.livestreamusingmvvm.ui.LiveStreamsListFragment"
+        android:name="com.example.livestreamusingmvvm.ui.view.LiveStreamsListFragment"
         android:label="Live Streams"
         tools:layout="@layout/fragment_live_streams_list">
         <action
@@ -22,7 +22,7 @@
     <!-- LiveStreamPlayerFragment -->
     <fragment
         android:id="@+id/liveStreamPlayerFragment"
-        android:name="com.example.livestreamusingmvvm.ui.LiveStreamPlayerFragment"
+        android:name="com.example.livestreamusingmvvm.ui.view.LiveStreamPlayerFragment"
         android:label="Live Stream Player"
         tools:layout="@layout/fragment_live_stream_player">
         <argument

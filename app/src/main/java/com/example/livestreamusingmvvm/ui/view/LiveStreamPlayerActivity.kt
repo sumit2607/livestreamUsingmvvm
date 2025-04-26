@@ -1,19 +1,16 @@
-package com.example.livestreamusingmvvm.ui
+package com.example.livestreamusingmvvm.ui.view
 
 
 import android.os.Bundle
-import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.livestreamusingmvvm.R
 import com.example.livestreamusingmvvm.databinding.ActivityLiveStreamPlayerBinding
 import io.antmedia.webrtcandroidframework.api.IWebRTCClient
 import io.antmedia.webrtcandroidframework.core.WebRTCClient
 import org.webrtc.EglBase
-import org.webrtc.SurfaceViewRenderer
 
 
 class LiveStreamPlayerActivity : AppCompatActivity() {

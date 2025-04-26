@@ -1,5 +1,6 @@
-package com.example.livestreamusingmvvm.remote
+package com.example.livestreamusingmvvm.network
 
+import com.example.livestreamusingmvvm.model.LiveStream
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

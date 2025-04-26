@@ -1,10 +1,10 @@
-package com.example.livestreamusingmvvm.viewmodel.viewmodelfactory
+package com.example.livestreamusingmvvm.ui.viewmodel.viewmodelfactory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.livestreamusingmvvm.repo.LiveStreamRepository
-import com.example.livestreamusingmvvm.viewmodel.LiveStreamViewModel
+import com.example.livestreamusingmvvm.repository.LiveStreamRepository
+import com.example.livestreamusingmvvm.ui.viewmodel.LiveStreamViewModel
 
 class LiveStreamViewModelFactory(
     private val repository: LiveStreamRepository

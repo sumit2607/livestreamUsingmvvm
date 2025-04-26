@@ -1,11 +1,11 @@
-package com.example.livestreamusingmvvm.viewmodel
+package com.example.livestreamusingmvvm.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.livestreamusingmvvm.remote.LiveStream
-import com.example.livestreamusingmvvm.repo.LiveStreamRepository
+import com.example.livestreamusingmvvm.model.LiveStream
+import com.example.livestreamusingmvvm.repository.LiveStreamRepository
 import kotlinx.coroutines.launch
 
 class LiveStreamViewModel(private val repository: LiveStreamRepository) : ViewModel() {
