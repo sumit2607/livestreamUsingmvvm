@@ -46,6 +46,7 @@ import com.example.livestreamusingmvvm.model.LiveStream
 import com.example.livestreamusingmvvm.ui.view.LiveStreamPlayerActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.CircularProgressIndicator
+import com.example.livestreamusingmvvm.ui.view.ui.ui.LiveStreamPlayerComposeActivity
 
 class MainActivity : ComponentActivity() {
 
@@ -150,7 +151,7 @@ fun LiveStreamItem(stream: LiveStream) {
 
         Button(
             onClick = {
-                val intent = Intent(context, LiveStreamPlayerActivity::class.java)
+                val intent = Intent(context, LiveStreamPlayerComposeActivity::class.java)
                 intent.putExtra("streamId", stream.streamId)
                 context.startActivity(intent)
             },
