@@ -59,244 +59,239 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 
 
+import android.app.Activity
+import android.app.PictureInPictureParams
+import android.app.PictureInPictureUiState
+import android.content.res.Configuration
+import android.os.Build
+import android.util.Rational
+import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.graphics.graphicsLayer
+
 class LiveStreamPlayerComposeActivity : ComponentActivity() {
+
     private lateinit var surfaceViewRenderer: SurfaceViewRenderer
-    private var webRTCClient: WebRTCClient? = null
+    private var webRTCClient: IWebRTCClient? = null
+
+    private var isInPipMode by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             LiveStreamPlayerScreen()
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @kotlin.OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun LiveStreamPlayerScreen() {
         val context = LocalContext.current
+        var messageText by remember { mutableStateOf("") }
 
         Box(modifier = Modifier.fillMaxSize()) {
-            // Fullscreen Video Player
+
+            // WebRTC Video Surface
             AndroidView(
-                factory = { context ->
-                    surfaceViewRenderer = SurfaceViewRenderer(context)
-                    surfaceViewRenderer.apply {
-                        // Any SurfaceViewRenderer setup
+                factory = { ctx ->
+                    surfaceViewRenderer = SurfaceViewRenderer(ctx).apply {
+                        // Setup if required
                     }
+                    surfaceViewRenderer
                 },
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Overlay Top-Left UI
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopStart),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "Profile Icon",
-                    tint = Color.White,
+            if (!isInPipMode) {
+                // Profile UI Top-Left
+                Column(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color.Gray)
-                        .padding(8.dp)
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Sumit Rai",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Button(
-                    onClick = { /* Follow action */ },
-                    modifier = Modifier
-                        .width(80.dp)
-                        .height(30.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White
-                    ),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp)
+                        .padding(16.dp)
+                        .align(Alignment.TopStart),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Follow", fontSize = 12.sp)
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            // LIVE Icon with Viewer Count at Top-Right (proper horizontal spacing)
-            Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopEnd)
-                    .background(Color.Red, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 12.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp) // 👈 this creates horizontal spacing between items
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Live Icon",
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Profile Icon",
                         tint = Color.White,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray)
+                            .padding(8.dp)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "LIVE",
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Viewers Icon",
-                        tint = Color.White,
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "200",
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
+                    Spacer(modifier = Modifier.height(4.dp))
 
+                    Text(text = "Sumit Rai", color = Color.White, fontSize = 14.sp)
 
-            // Love (Heart) Icon above Gift Tray (Bottom-Right)
-            Icon(
-                imageVector = Icons.Default.Favorite, // Heart Icon
-                contentDescription = "Love Icon",
-                tint = Color.Red,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 150.dp) // Positioned above gift tray
-                    .size(50.dp)
-                    .background(Color.White, shape = CircleShape)
-                    .padding(12.dp)
-            )
+                    Spacer(modifier = Modifier.height(4.dp))
 
-            // Other UI items like Love Icon etc.
-            // Gifts Row at Bottom
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
-                    .align(Alignment.BottomCenter)
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                val giftItems = listOf(
-                    Pair(Icons.Default.Star, "Star Gift"),
-                    Pair(Icons.Default.Favorite, "Heart Gift"),
-                    Pair(Icons.Default.Lock, "Lock Box Gift"),
-                    Pair(Icons.Default.ShoppingCart, "Shopping Cart Gift"),
-                    Pair(Icons.Default.Face, "Face Gift"),
-                    Pair(Icons.Default.Lock, "Lock"),
-                    Pair(Icons.Default.Favorite, "Favorite Gift"),
-                    Pair(Icons.Default.Star, "Star Gift"),
-                    Pair(Icons.Default.Star, "Star Gift"),
-                    Pair(Icons.Default.Star, "Star Gift")
-                )
-
-                giftItems.forEach { (icon, name) ->
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Button(
+                        onClick = { /* Follow action */ },
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(30.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        ),
+                        shape = CircleShape,
+                        contentPadding = PaddingValues(0.dp)
                     ) {
+                        Text(text = "Follow", fontSize = 12.sp)
+                    }
+                }
+
+                // LIVE Info Top-Right
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.TopEnd)
+                        .background(Color.Red, shape = RoundedCornerShape(8.dp))
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = icon,
-                            contentDescription = "Gift: $name",
-                            tint = Color.Yellow,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .background(Color.DarkGray, shape = CircleShape)
-                                .padding(12.dp)
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Live Icon",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = name,
+                            text = "LIVE",
                             color = Color.White,
-                            fontSize = 10.sp,
-                            maxLines = 1
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Viewers Icon",
+                            tint = Color.White,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "200",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
-            }
-
-            // TextField with WhatsApp icon and "Share Now" text at the bottom right
-            var messageText by remember { mutableStateOf("") }
-
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomStart) // Align at the bottom right
-                    .padding(
-                        end = 16.dp,
-                        bottom = 10.dp
-                    ) // Adjust positioning from right and bottom
-                    .width(400.dp), // Control the width of the row
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // TextField (Say Hi!)
-                TextField(
-                    value = messageText,
-                    onValueChange = { messageText = it },
-                    placeholder = { Text("Say Hi!") },
+                // Heart Icon
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Love Icon",
+                    tint = Color.Red,
                     modifier = Modifier
-                        .weight(1f) // Take available space
-                        .height(50.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White, // background color
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = CircleShape,
-                    singleLine = true
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 16.dp, bottom = 150.dp)
+                        .size(50.dp)
+                        .background(Color.White, shape = CircleShape)
+                        .padding(12.dp)
                 )
 
-                // WhatsApp Icon
-                IconButton(
-                    onClick = { /* WhatsApp sharing action */ },
+                // Gift Items
+                Row(
                     modifier = Modifier
-                        .padding(start = 8.dp) // Space between text field and WhatsApp icon
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
+                        .align(Alignment.BottomCenter)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Share, // Use Share icon if WhatsApp icon is not available
-                        contentDescription = "WhatsApp Share",
-                        tint = Color.Green,
-                        modifier = Modifier.size(30.dp) // Icon size
+                    val giftItems = listOf(
+                        Pair(Icons.Default.Star, "Star Gift"),
+                        Pair(Icons.Default.Favorite, "Heart Gift"),
+                        Pair(Icons.Default.Lock, "Lock Box Gift"),
+                        Pair(Icons.Default.ShoppingCart, "Cart Gift"),
+                        Pair(Icons.Default.Face, "Face Gift"),
+                        Pair(Icons.Default.Lock, "Lock"),
+                        Pair(Icons.Default.Favorite, "Fav Gift"),
+                        Pair(Icons.Default.Star, "Star Gift"),
+                        Pair(Icons.Default.Star, "Star Gift"),
+                        Pair(Icons.Default.Star, "Star Gift")
                     )
+
+                    giftItems.forEach { (icon, name) ->
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = name,
+                                tint = Color.Yellow,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .background(Color.DarkGray, shape = CircleShape)
+                                    .padding(12.dp)
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = name,
+                                color = Color.White,
+                                fontSize = 10.sp,
+                                maxLines = 1
+                            )
+                        }
+                    }
                 }
 
-                // "Share Now" Text
-                Text(
-                    text = "Share Now",
-                    color = Color.Green,
-                    fontSize = 14.sp,
+                // Chat Box
+                Row(
                     modifier = Modifier
-                        .padding(start = 8.dp) // Space between icon and text
-                        .clickable { /* Handle share action */ }
-                )
+                        .align(Alignment.BottomStart)
+                        .padding(end = 16.dp, bottom = 10.dp)
+                        .width(400.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextField(
+                        value = messageText,
+                        onValueChange = { messageText = it },
+                        placeholder = { Text("Say Hi!") },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.White,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        shape = CircleShape,
+                        singleLine = true
+                    )
 
+                    IconButton(
+                        onClick = { /* WhatsApp share */ },
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share",
+                            tint = Color.Green,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
 
+                    Text(
+                        text = "Share Now",
+                        color = Color.Green,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clickable { /* Handle Share */ }
+                    )
+                }
             }
         }
 
-        // Initialize WebRTC client when the screen is displayed
+        // Start WebRTC when screen is ready
         LaunchedEffect(Unit) {
             webRTCClient = IWebRTCClient.builder()
                 .setActivity(this@LiveStreamPlayerComposeActivity)
@@ -304,49 +299,54 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
                 .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")
                 .build()
 
-            webRTCClient!!.init()
-            webRTCClient!!.play("streamId_lmhdVQiRR")
-            // Listen for connection state or stream events
+            webRTCClient?.play("streamId_lmhdVQiRR")
             startStreamMonitoring(context)
-
         }
-
-
     }
 
-
-    // Periodically check if the stream is still playing or available
-    // Periodically check if the stream is still playing or available
     private fun startStreamMonitoring(context: Context) {
         val handler = Handler(Looper.getMainLooper())
-        val checkIntervalMillis: Long = 5000 // 5-second interval to check stream availability
+        val checkInterval = 5000L
 
         handler.postDelayed(object : Runnable {
             override fun run() {
-                // Check if the stream is available or if there's any error (e.g., stream not found)
-                if (webRTCClient == null || !webRTCClient!!.isStreaming("streamId_lmhdVQiRR")) { // Assuming isPlaying() checks if the stream is active
-                    stopStreamAndFinish(context) // If stream isn't playing, stop and finish
+                if (webRTCClient == null || !webRTCClient!!.isStreaming("streamId_lmhdVQiRR")) {
+                    stopStreamAndFinish(context)
                 } else {
-                    handler.postDelayed(this, checkIntervalMillis) // Continue monitoring
+                    handler.postDelayed(this, checkInterval)
                 }
             }
-        }, checkIntervalMillis)
+        }, checkInterval)
     }
 
-
-    // Stop the stream and finish the activity
-    private fun stopStreamAndFinish(context :Context) {
-        // Stop the stream if it's running
-
+    private fun stopStreamAndFinish(context: Context) {
         webRTCClient?.stop("streamId_lmhdVQiRR")
         Toast.makeText(context, "Live show ended by author", Toast.LENGTH_SHORT).show()
-        // Finish the activity
         finish()
     }
-
 
     override fun onStop() {
         super.onStop()
         webRTCClient?.stop("streamId_lmhdVQiRR")
     }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val params = PictureInPictureParams.Builder()
+                .setAspectRatio(Rational(9, 16))
+                .build()
+            enterPictureInPictureMode(params)
+        }
+    }
+
+
+    @RequiresApi(35)
+    override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {
+        super.onPictureInPictureUiStateChanged(pipState)
+        isInPipMode = pipState.isTransitioningToPip
+    }
 }
+
+
+

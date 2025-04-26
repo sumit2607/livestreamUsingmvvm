@@ -30,6 +30,9 @@
         <activity
             android:name=".ui.view.ui.ui.LiveStreamPlayerComposeActivity"
             android:exported="false"
+            android:supportsPictureInPicture="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
             android:label="@string/title_activity_live_stream_player_compose"
             android:theme="@style/Theme.LivestreamUsingmvvm" />
         <activity
