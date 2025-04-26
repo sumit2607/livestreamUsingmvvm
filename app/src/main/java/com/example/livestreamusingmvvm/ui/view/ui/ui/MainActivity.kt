@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm
+package com.example.livestreamusingmvvm.ui.view.ui.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.livestreamusingmvvm.model.LiveStream
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.CircularProgressIndicator
-import com.example.livestreamusingmvvm.ui.view.ui.ui.LiveStreamPlayerComposeActivity
+import com.example.livestreamusingmvvm.R
 
 class MainActivity : ComponentActivity() {
 

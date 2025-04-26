@@ -45,7 +45,7 @@
             android:exported="false"
             android:theme="@style/Theme.LivestreamUsingmvvm" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.view.ui.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
