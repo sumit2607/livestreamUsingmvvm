@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui.view.ui.ui
+package com.example.livestreamusingmvvm.ui.view.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,20 +9,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.livestreamusingmvvm.network.NetworkModule
-import com.example.livestreamusingmvvm.repository.LiveStreamRepository
 import com.example.livestreamusingmvvm.ui.viewmodel.LiveStreamViewModel
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,14 +34,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.livestreamusingmvvm.model.LiveStream
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieClipSpec
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState

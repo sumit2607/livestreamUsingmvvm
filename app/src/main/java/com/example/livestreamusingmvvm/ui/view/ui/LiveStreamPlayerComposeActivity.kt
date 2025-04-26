@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui.view.ui.ui
+package com.example.livestreamusingmvvm.ui.view.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -15,17 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import io.antmedia.webrtcandroidframework.api.IWebRTCClient
-import io.antmedia.webrtcandroidframework.core.WebRTCClient
-import org.webrtc.EglBase
 import org.webrtc.SurfaceViewRenderer
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,19 +31,14 @@ import androidx.compose.material3.Text
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
-import com.example.livestreamusingmvvm.R
 
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
@@ -59,16 +48,11 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 
 
-import android.app.Activity
 import android.app.PictureInPictureParams
 import android.app.PictureInPictureUiState
-import android.content.res.Configuration
 import android.os.Build
 import android.util.Rational
-import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.graphicsLayer
 
 class LiveStreamPlayerComposeActivity : ComponentActivity() {
 

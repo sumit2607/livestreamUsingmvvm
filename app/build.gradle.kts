@@ -78,7 +78,7 @@ dependencies {
     implementation ("com.google.android.exoplayer:exoplayer-core:2.19.1")
     implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
     //implementation ("io.antmedia:WebRTCAndroidFramework:2.4.3") // or latest version
-    implementation("io.antmedia:webrtc-android-framework:2.11.0")
+    implementation("io.antmedia:webrtc-android-framework:2.11.1")
 
 
     // Jetpack Compose
@@ -108,4 +108,6 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.0.0")
 
     implementation("com.google.accompanist:accompanist-swiperefresh:0.28.0") // or latest ve
+
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
 }
