@@ -106,4 +106,6 @@ dependencies {
     kapt("androidx.hilt:hilt-compiler:1.1.0")
 
     implementation("com.airbnb.android:lottie-compose:6.0.0")
+
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.28.0") // or latest ve
 }

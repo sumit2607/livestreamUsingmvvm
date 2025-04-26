@@ -55,6 +55,8 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.livestreamusingmvvm.R
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
@@ -104,11 +106,19 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
+
                 when (selectedTab) {
-                    BottomNavItem.Home -> liveStreams?.let { HomeScreen(it) }
+                    BottomNavItem.Home -> liveStreams?.let { HomeScreen() }
                     BottomNavItem.LiveNow -> liveStreams?.let { LiveNowScreen() }
                     BottomNavItem.Profile -> ProfileScreen()
-                    BottomNavItem.AllLiveShows -> liveStreams?.let { AllLiveShowsScreen(it) }
+                    BottomNavItem.AllLiveShows -> {
+                        // Fetch the live stream data from ViewModel or any source
+                        liveStreams?.let { AllLiveShowsScreen(it, isLoading = false, onRefresh = {
+                        /* refresh logic */
+                            viewModel.fetchLiveStreams()
+                        }) }
+                    }
+
                 }
 
                 if (loadingState) {
@@ -155,7 +165,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun HomeScreen(liveStreams: List<LiveStream>) {
+    fun HomeScreen() {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -184,13 +194,55 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun AllLiveShowsScreen(liveStreams: List<LiveStream>) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(liveStreams) { stream ->
-                LiveStreamItem(stream = stream)
+    fun AllLiveShowsScreen(
+        liveStreams: List<LiveStream>,
+        isLoading: Boolean, // Pass this to manage loading state
+        onRefresh: () -> Unit // Callback for swipe-to-refresh
+    ) {
+        // Swipe-to-refresh layout should wrap the scrollable content (LazyColumn)
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = isLoading),
+            onRefresh = onRefresh
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Display heading at the top center
+                Text(
+                    text = "Live Shows",
+                    style = MaterialTheme.typography.labelLarge.copy(color = Color.Black), // Customize text style
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally) // Align to the top-center
+                        .padding(top = 16.dp) // Adjust the top padding as per your need
+                )
+
+                if (liveStreams.isEmpty()) {
+                    // Show Lottie Animation
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // Replace this with your actual Lottie animation
+                        LottieAnimation(
+                            composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.no_data_animation)).value,
+                            iterations = LottieConstants.IterateForever,
+                            modifier = Modifier.size(200.dp)
+                        )
+                    }
+                } else {
+                    // Show the list
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(liveStreams) { stream ->
+                            LiveStreamItem(stream = stream)
+                        }
+                    }
+                }
             }
         }
     }
+
+
+
 
     @Preview(showBackground = true)
     @Composable
@@ -215,22 +267,6 @@ class MainActivity : ComponentActivity() {
                 .background(Color(0xFFF0F0F0))
                 .padding(10.dp)
         ) {
-            if (stream == null || stream.streamId.isEmpty()) {
-                // Show Lottie animation if there's no stream data
-                composition?.let {
-                    LottieAnimation(
-                        composition = it,
-                        progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(text = "No data available", color = Color.DarkGray)
-                }
-            } else {
                 // Show actual stream content if data is available
                 Image(
                     painter = painterResource(id = R.drawable.liveshow),
@@ -243,22 +279,25 @@ class MainActivity : ComponentActivity() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(text = stream.streamId, fontWeight = FontWeight.Bold)
+            stream?.streamId?.let { Text(text = it, fontWeight = FontWeight.Bold) }
+            if (stream != null) {
                 Text(text = stream.status, color = Color.DarkGray)
+            }
 
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Button(
                     onClick = {
                         val intent = Intent(context, LiveStreamPlayerComposeActivity::class.java)
-                        intent.putExtra("streamId", stream.streamId)
+                        if (stream != null) {
+                            intent.putExtra("streamId", stream.streamId)
+                        }
                         context.startActivity(intent)
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(text = "Play")
                 }
-            }
         }
     }
 
