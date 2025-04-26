@@ -58,6 +58,11 @@ dependencies {
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation ("com.google.android.exoplayer:exoplayer-core:2.17.1")
     implementation ("com.google.android.exoplayer:exoplayer-ui:2.17.1")
+    //implementation ("io.antmedia:WebRTCAndroidFramework:2.4.3") // or latest version
+    implementation("io.antmedia:webrtc-android-framework:2.11.0")
+
+
+
 
 
 

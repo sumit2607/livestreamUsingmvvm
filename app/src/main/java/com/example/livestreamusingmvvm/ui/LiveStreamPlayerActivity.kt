@@ -1,25 +1,19 @@
 package com.example.livestreamusingmvvm.ui
 
+
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.livestreamusingmvvm.R
-import com.example.livestreamusingmvvm.databinding.ActivityLiveStreamPlayerBinding
+import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.example.livestreamusingmvvm.R
+import com.example.livestreamusingmvvm.databinding.ActivityLiveStreamPlayerBinding
+import io.antmedia.webrtcandroidframework.api.IWebRTCClient
+import org.webrtc.EglBase
+import org.webrtc.SurfaceViewRenderer
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
 
 class LiveStreamPlayerActivity : AppCompatActivity() {
 
@@ -32,6 +26,19 @@ class LiveStreamPlayerActivity : AppCompatActivity() {
         // Initialize View Binding
         binding = ActivityLiveStreamPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        val eglBase = EglBase.create()
+        binding.playerview.init(eglBase.eglBaseContext, null)
+
+//        val webRTCClient: IWebRTCClient = IWebRTCClient.builder()
+//            .setActivity(this)
+//            .addRemoteVideoRenderer(binding.playerview)
+//            .setServerUrl("https://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")
+//            .build()
+//
+//        webRTCClient.play("streamId_BWaMYQ3Yb")
+
 
         // Get streamId from Intent
         val streamId = intent.getStringExtra("streamId") ?: ""
@@ -54,9 +61,8 @@ class LiveStreamPlayerActivity : AppCompatActivity() {
             try {
                 // Simulate network delay or data fetch
                 Thread.sleep(1000)
-
                 // Mock data for this example
-                val streamUrl = "https://antmedia.workuplift.com:5443/WebRTCAppEE"
+                val streamUrl = "rtmp://antmedia.workuplift.com/WebRTCAppEE/streamId_BWaMYQ3Yb"
                 val streamRole = "Live Stream Role"
                 val streamType = "Live"
 
@@ -87,7 +93,9 @@ class LiveStreamPlayerActivity : AppCompatActivity() {
         }
 
         // Bind the player to the PlayerView in your layout
-        binding.playerView.player = player as com.google.android.exoplayer2.Player?
+        //binding.playerView.player = player
+
+
     }
 
     private fun showLoading(isLoading: Boolean) {
