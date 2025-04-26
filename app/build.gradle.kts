@@ -104,4 +104,6 @@ dependencies {
     // Hilt for Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     kapt("androidx.hilt:hilt-compiler:1.1.0")
+
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
 }
