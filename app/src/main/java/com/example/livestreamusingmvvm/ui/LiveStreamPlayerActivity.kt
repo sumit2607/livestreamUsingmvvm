@@ -29,15 +29,21 @@ class LiveStreamPlayerActivity : AppCompatActivity() {
 
 
         val eglBase = EglBase.create()
-        binding.playerview.init(eglBase.eglBaseContext, null)
+       //binding.playerview.init(eglBase.eglBaseContext, null)
 
-//        val webRTCClient: IWebRTCClient = IWebRTCClient.builder()
-//            .setActivity(this)
-//            .addRemoteVideoRenderer(binding.playerview)
-//            .setServerUrl("https://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")
-//            .build()
-//
-//        webRTCClient.play("streamId_BWaMYQ3Yb")
+        // Initialize WebRTCClient with WebSocket URL for playing stream
+        val webRTCClient = IWebRTCClient.builder()
+            .setActivity(this)  // Context (Activity)
+            .addRemoteVideoRenderer(binding.playerview)  // Remote video renderer (for playing the stream)
+            .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")  // Correct WebSocket URL for WebRTC
+            .build()
+
+// Initialize the client
+        webRTCClient.init()
+
+// Play the stream with the given stream ID
+        webRTCClient.play("stream1")
+
 
 
         // Get streamId from Intent
