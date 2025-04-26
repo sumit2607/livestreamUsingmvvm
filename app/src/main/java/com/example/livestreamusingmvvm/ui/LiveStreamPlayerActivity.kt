@@ -11,6 +11,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.example.livestreamusingmvvm.R
 import com.example.livestreamusingmvvm.databinding.ActivityLiveStreamPlayerBinding
 import io.antmedia.webrtcandroidframework.api.IWebRTCClient
+import io.antmedia.webrtcandroidframework.core.WebRTCClient
 import org.webrtc.EglBase
 import org.webrtc.SurfaceViewRenderer
 
@@ -19,7 +20,7 @@ class LiveStreamPlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLiveStreamPlayerBinding
     private var player: ExoPlayer? = null
-
+    var webRTCClient : WebRTCClient? =null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,17 +33,17 @@ class LiveStreamPlayerActivity : AppCompatActivity() {
        //binding.playerview.init(eglBase.eglBaseContext, null)
 
         // Initialize WebRTCClient with WebSocket URL for playing stream
-        val webRTCClient = IWebRTCClient.builder()
+         webRTCClient = IWebRTCClient.builder()
             .setActivity(this)  // Context (Activity)
             .addRemoteVideoRenderer(binding.playerview)  // Remote video renderer (for playing the stream)
             .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")  // Correct WebSocket URL for WebRTC
             .build()
 
 // Initialize the client
-        webRTCClient.init()
+        webRTCClient!!.init()
 
 // Play the stream with the given stream ID
-        webRTCClient.play("stream1")
+        webRTCClient!!.play("stream1")
 
 
 

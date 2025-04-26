@@ -14,7 +14,7 @@ import org.webrtc.SurfaceViewRenderer
 class PublishStreamActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPublishViewBindingBinding
-    private lateinit var webRTCClient: IWebRTCClient
+    private lateinit var webRTCClient: WebRTCClient
     private var isStreaming = false
     private var isRendererInitialized = false
 
@@ -40,14 +40,14 @@ class PublishStreamActivity : AppCompatActivity() {
         binding.btnStart.setOnClickListener {
             if (!isStreaming) {
 // Initialize WebRTCClient with correct WebSocket URL for publishing
-                val webRTCClient = IWebRTCClient.builder()
+                 webRTCClient = IWebRTCClient.builder()
                     .setActivity(this)  // Context (Activity)
                     .setLocalVideoRenderer(binding.publisherView)  // Local video renderer
                     .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")  // Correct WebSocket URL for publishing
                     .build()
 
 // Initialize WebRTC client
-                webRTCClient.init()
+                webRTCClient?.init()
 
 // Start publishing the stream
                 webRTCClient.publish("stream1")  // Use your stream name as needed

@@ -37,11 +37,11 @@ class MainActivity : AppCompatActivity() {
         val fragment = LiveStreamsListFragment()
 
         // Open the new fragment (replace the current one)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.navhostfragment, fragment)  // Replace with the container ID
-            .addToBackStack(null)  // Add to back stack to enable back navigation
-            .commit()
-//        val intent = Intent(this, PublishStreamActivity::class.java)
-//        startActivity(intent)
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.navhostfragment, fragment)  // Replace with the container ID
+//            .addToBackStack(null)  // Add to back stack to enable back navigation
+//            .commit()
+        val intent = Intent(this, PublishStreamActivity::class.java)
+        startActivity(intent)
     }
 }
