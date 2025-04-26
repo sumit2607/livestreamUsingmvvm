@@ -27,6 +27,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -38,78 +43,143 @@ import androidx.compose.ui.unit.dp
 import com.example.livestreamusingmvvm.model.LiveStream
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.livestreamusingmvvm.R
 import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: LiveStreamViewModel by viewModels() // Automatically injected by Hilt
+    private val viewModel: LiveStreamViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
 
         setContent {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(
-                        WindowInsets.systemBars
-                            .asPaddingValues()
-                    )
-            ) {
-                LiveStreamsListScreen()
-            }
+            LiveStreamsListScreen()
         }
     }
 }
 
 @Composable
-
 fun LiveStreamsListScreen() {
-    // Get the viewModel using Hilt's viewModels delegate
     val viewModel: LiveStreamViewModel = hiltViewModel()
 
     val liveStreams by viewModel.liveStreams.observeAsState(emptyList())
     val errorState by viewModel.errorState.observeAsState("")
     val loadingState by viewModel.loadingState.observeAsState(false)
 
+    var selectedTab by remember { mutableStateOf(BottomNavItem.Home) }
+
     LaunchedEffect(Unit) {
-        // Fetch the live streams when the screen is launched
         viewModel.fetchLiveStreams()
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column {
-            // Show error message if there's any
-            if (errorState.isNotEmpty()) {
-                Text(
-                    text = errorState,
-                    color = Color.Red,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-            }
-
-            // Display the list of live streams
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(liveStreams ?: emptyList()) { stream ->
-                    LiveStreamItem(stream = stream)
-                }
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(selectedTab = selectedTab) {
+                selectedTab = it
             }
         }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            when (selectedTab) {
+                BottomNavItem.Home -> liveStreams?.let { HomeScreen(it) }
+                BottomNavItem.LiveNow -> liveStreams?.let { LiveNowScreen(it) }
+                BottomNavItem.Profile -> ProfileScreen()
+                BottomNavItem.AllLiveShows -> liveStreams?.let { AllLiveShowsScreen(it) }
+            }
 
-        // Show loading indicator if the state is true
-        if (loadingState) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
+            if (loadingState) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+    }
+}
+
+enum class BottomNavItem(val label: String, val icon: ImageVector) {
+    Home("Home", Icons.Default.Home),
+    AllLiveShows("All Live Shows", Icons.Default.List),
+    LiveNow("Go Now", Icons.Default.PlayArrow),
+    Profile("Profile", Icons.Default.Person),
+
+}
+
+@Composable
+fun BottomNavigationBar(
+    selectedTab: BottomNavItem,
+    onTabSelected: (BottomNavItem) -> Unit
+) {
+    NavigationBar(
+        containerColor = Color.White
+    ) {
+        BottomNavItem.values().forEach { item ->
+            NavigationBarItem(
+                selected = selectedTab == item,
+                onClick = { onTabSelected(item) },
+                icon = {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = item.label
+                    )
+                },
+                label = {
+                    Text(text = item.label)
+                }
             )
         }
     }
 }
 
+@Composable
+fun HomeScreen(liveStreams: List<LiveStream>) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(liveStreams) { stream ->
+            LiveStreamItem(stream = stream)
+        }
+    }
+}
+
+@Composable
+fun LiveNowScreen(liveStreams: List<LiveStream>) {
+    // You can filter streams which are actually live
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(liveStreams) { stream ->
+            LiveStreamItem(stream = stream)
+        }
+    }
+}
+
+@Composable
+fun ProfileScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "Profile Screen", fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun AllLiveShowsScreen(liveStreams: List<LiveStream>) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(liveStreams) { stream ->
+            LiveStreamItem(stream = stream)
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun LiveStreamsListScreenPreview() {
+    LiveStreamsListScreen()
+}
 
 @Composable
 fun LiveStreamItem(stream: LiveStream) {
