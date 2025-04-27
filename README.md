@@ -1,6 +1,6 @@
 # VideoCallApp
 
-Welcome to **My Video call stream cpp**! This repository hosts the source code for an amazing Android app.
+Welcome to **My Video call stream app**! This repository hosts the source code for an amazing Android app.
 
 ### App Details
 
