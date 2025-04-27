@@ -110,4 +110,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-swiperefresh:0.28.0") // or latest ve
 
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
+
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 }

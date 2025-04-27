@@ -15,6 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.livestreamusingmvvm.ui.viewmodel.LiveStreamViewModel
 
 import android.content.Intent
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
@@ -118,7 +120,9 @@ class MainActivity : ComponentActivity() {
                                 it,
                                 isLoading = state.isLoading,
                                 onRefresh = {
+                                    Log.d("AllLiveShowsScreen", "Refreshing Live Streams")
                                     viewModel.handleIntent(LiveStreamsIntent.RefreshLiveStreams())
+                                    Toast.makeText(this@MainActivity, "Refresh successfully", Toast.LENGTH_SHORT).show()
                                 }
                             )
                         }
@@ -201,7 +205,7 @@ class MainActivity : ComponentActivity() {
         isLoading: Boolean, // Pass this to manage loading state
         onRefresh: () -> Unit // Callback for swipe-to-refresh
     ) {
-        // Swipe-to-refresh layout should wrap the scrollable content (LazyColumn)
+        // Swipe-to-refresh layout should wrap the scrollable content (LazyVerticalGrid)
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = isLoading),
             onRefresh = onRefresh
@@ -245,6 +249,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 
 
 
