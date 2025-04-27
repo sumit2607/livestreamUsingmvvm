@@ -17,6 +17,7 @@ Welcome to **My Video call stream app**! This repository hosts the source code f
 - user can see list of live show
 - you can watch live show
 - user can pay gift to user using razor-pay payment link
+- swipe to refesh in live show list
 
 ## Getting Started
 
