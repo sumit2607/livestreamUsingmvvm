@@ -38,6 +38,9 @@ Isolation of Features: Live Show is a feature that can exist independently. Usin
 
   Deep Link Support: Most deep link handlers (Intent Filters) work at the Activity level. Directly navigating to a Fragment would require additional manual handling, adding unnecessary complexity.
 
+##Bugs
+Due to time constraints, there may be some bugs
+
 ### Instructions to clone this project ✌
 
 1. Open **Android Studio**.
