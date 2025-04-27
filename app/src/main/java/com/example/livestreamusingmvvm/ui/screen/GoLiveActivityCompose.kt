@@ -35,7 +35,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.livestreamusingmvvm.ui.screen.theme.LivestreamUsingmvvmTheme
-
+import org.webrtc.MediaStream
+import kotlin.random.Random
 
 
 class GoLiveActivityCompose : ComponentActivity() {
@@ -46,6 +47,7 @@ class GoLiveActivityCompose : ComponentActivity() {
     private var isVideoStopped by mutableStateOf(false)
 
     private lateinit var surfaceViewRenderer: SurfaceViewRenderer
+    var streamPublishId = ""
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -64,6 +66,8 @@ class GoLiveActivityCompose : ComponentActivity() {
 
         surfaceViewRenderer = SurfaceViewRenderer(this)
         requestPermissions()
+
+        streamPublishId =    generateRandomString()
 
         // Automatically start streaming when the activity is created
         startStream()
@@ -91,22 +95,31 @@ class GoLiveActivityCompose : ComponentActivity() {
                     onMuteClick = {
                         isAudioMuted = !isAudioMuted
                         if (isAudioMuted) {
-                            // webRTCClient.muteAudio() // Unmute as required
+                             webRTCClient.setAudioEnabled(false) // Unmute as required
                         } else {
-                            // webRTCClient.unmuteAudio() // Unmute as required
+                            webRTCClient.setAudioEnabled(true) // Unmute as requiredd
                         }
                     },
                     onStopVideoClick = {
                         isVideoStopped = !isVideoStopped
                         if (isVideoStopped) {
-                            // webRTCClient.stopVideo()
+                             webRTCClient.setVideoEnabled(false)
                         } else {
-                            // webRTCClient.startVideo()
+                            webRTCClient.setVideoEnabled(true)
                         }
                     }
                 )
             }
         }
+    }
+
+   private fun generateRandomString(): String {
+        val number = Random.nextInt(1000)  // Generates a random number between 0 and 999
+        val randomLetters = (1..3)
+            .map { ('a'..'z').random() }  // Randomly selecting 3 letters
+            .joinToString("")
+
+        return "stream$number$randomLetters"
     }
 
     private fun requestPermissions() {
@@ -134,13 +147,13 @@ class GoLiveActivityCompose : ComponentActivity() {
             .build()
 
         webRTCClient.init()
-        webRTCClient.publish("stream1")
+        webRTCClient.publish(streamPublishId)
         isStreaming = true
     }
 
     private fun stopStream() {
         if (isStreaming) {
-            webRTCClient.stop("stream1")
+            webRTCClient.stop(streamPublishId)
             isStreaming = false
         }
     }
@@ -152,7 +165,6 @@ class GoLiveActivityCompose : ComponentActivity() {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoLiveScreen(

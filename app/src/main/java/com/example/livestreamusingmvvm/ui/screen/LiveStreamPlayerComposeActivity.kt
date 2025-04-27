@@ -53,12 +53,15 @@ import android.app.PictureInPictureUiState
 import android.os.Build
 import android.util.Rational
 import androidx.annotation.RequiresApi
+import org.webrtc.DataChannel
+import org.webrtc.MediaStream
+import org.webrtc.PeerConnection
 
 class LiveStreamPlayerComposeActivity : ComponentActivity() {
 
     private lateinit var surfaceViewRenderer: SurfaceViewRenderer
     private var webRTCClient: IWebRTCClient? = null
-  var   streamId =" "
+    var streamId = " "
     private var monitoringRunnable: Runnable? = null
 
 
@@ -288,7 +291,7 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
                 .build()
 
             webRTCClient?.play(streamId)
-           // startStreamMonitoring(context)
+            // startStreamMonitoring(context)
         }
     }
 
@@ -331,6 +334,7 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
         super.onBackPressed()
         //stopStreamAndFinish(this)
     }
+
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -347,7 +351,10 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
         super.onPictureInPictureUiStateChanged(pipState)
         isInPipMode = pipState.isTransitioningToPip
     }
+
 }
+
+
 
 
 
