@@ -19,7 +19,24 @@ Welcome to **My Video call stream app**! This repository hosts the source code f
 - user can pay gift to user using razor-pay payment link
 - swipe to refesh in live show list
 
-## Getting Started
+## Navigation structure
+Currently, we are using two separate activities: one for "Go Live" and another for "Play Live Show."
+However, in reality, we can manage both flows using a single activity, GoLiveActivityCompose, by displaying relevant details based on the user's role.
+
+Additionally, we are using a MainActivity to handle all navigation-related work.
+In MainActivity, we have implemented a Bottom Navigation Bar, and on click of any item, we redirect the user to the corresponding composable function.
+
+## Why did we use an Activity for the Live Show instead of a Fragment?
+As per the current best practices in Android development, if we want to open the Live Show screen via a deep link, it is much more straightforward and reliable to navigate directly to an Activity.
+Deep links are typically handled at the Activity level because:
+
+Lifecycle Management: Activities have a complete lifecycle, making them ideal for handling entry points like notifications, external URLs, and deep links.
+
+Back Stack Control: Opening a Fragment directly from outside the app can cause back stack issues. An Activity gives better control over the navigation stack.
+
+Isolation of Features: Live Show is a feature that can exist independently. Using an Activity allows us to fully isolate and manage resources, orientation, and streaming sessions without depending on the hosting Activity's state.
+
+  Deep Link Support: Most deep link handlers (Intent Filters) work at the Activity level. Directly navigating to a Fragment would require additional manual handling, adding unnecessary complexity.
 
 ### Instructions to clone this project ✌
 
