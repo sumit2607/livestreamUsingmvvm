@@ -108,6 +108,9 @@ Here are some screenshots of the cloned application:
 
 ![Screenshot 1](https://github.com/sumit2607/livestreamUsingmvvm/blob/main_mvi_jetpack_di_final_2.0/f1.png)
 
+## Screenshots For Architecture Pattern for this app
+![Screenshot 1](https://github.com/sumit2607/livestreamUsingmvvm/blob/main_mvi_jetpack_di_final_2.0/img.png)
+
 ## Contributing
 
 Contributions are welcome! If you find any issues or want to enhance the app, feel free to submit a pull request.
