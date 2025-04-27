@@ -1,6 +1,6 @@
 # VideoCallApp
 
-Welcome to **My Video Call App**! This repository hosts the source code for an amazing Android app.
+Welcome to **My Video call stream cpp**! This repository hosts the source code for an amazing Android app.
 
 ### App Details
 
@@ -11,9 +11,12 @@ Welcome to **My Video Call App**! This repository hosts the source code for an a
 ## Features
 
 - Connect with people via live streaming and video calls
-- Secure login with Google
-- Voice calling
-- Video feed similar to TikTok
+- User can mute video & audio stream
+- Video feed similar to TikTok in progress api created
+- user can see dummy profle
+- user can see list of live show
+- you can watch live show
+- user can pay gift to user using razor-pay payment link
 
 ## Getting Started
 
@@ -57,10 +60,6 @@ Welcome to **My Video Call App**! This repository hosts the source code for an a
 
 - `retrofit`: Type-safe HTTP client for Android, used for making network requests and interacting with REST APIs.
 - `converter-gson`: Converter for Retrofit to handle JSON to Java/Kotlin object conversion using Gson.
-
-### 5. RecyclerView
-
-- `recyclerview`: Provides an efficient way to display large sets of data in a scrolling list.
 
 ### 6. ExoPlayer
 
