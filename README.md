@@ -107,8 +107,7 @@ Welcome to **My Video Call App**! This repository hosts the source code for an a
 
 Here are some screenshots of the cloned application:
 
-![Screenshot 1](https://github.com/sumit2607/VideoCallApp/blob/master/1.jpeg)
-![Screenshot 2](https://github.com/sumit2607/VideoCallApp/blob/master/2.jpeg)
+![Screenshot 1](https://github.com/sumit2607/livestreamUsingmvvm/blob/main_mvi_jetpack_di_final_2.0/f1.png)
 
 ## Contributing
 
