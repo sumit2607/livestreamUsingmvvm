@@ -18,9 +18,16 @@ import android.content.Intent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
@@ -35,9 +42,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.livestreamusingmvvm.model.LiveStream
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -98,9 +109,10 @@ class MainActivity : ComponentActivity() {
                 when (selectedTab) {
                     BottomNavItem.Home -> HomeScreen()
                     BottomNavItem.LiveNow -> LiveNowScreen()
-                    BottomNavItem.Profile -> ProfileScreen()
+                    BottomNavItem.Profile -> DummyProfileScreen()
                     BottomNavItem.AllLiveShows -> {
                         state.liveStreams?.let {
+                            viewModel.handleIntent(LiveStreamsIntent.RefreshLiveStreams())
                             AllLiveShowsScreen(
                                 it,
                                 isLoading = state.isLoading,
@@ -181,15 +193,6 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    @Composable
-    fun ProfileScreen() {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Profile Screen", fontWeight = FontWeight.Bold)
-        }
-    }
 
     @Composable
     fun AllLiveShowsScreen(
@@ -229,7 +232,10 @@ class MainActivity : ComponentActivity() {
                     }
                 } else {
                     // Show the list
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2), // Two items per row
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         items(liveStreams) { stream ->
                             LiveStreamItem(stream = stream)
                         }
@@ -330,6 +336,187 @@ class MainActivity : ComponentActivity() {
     }
 
 }
+
+@Composable
+fun DummyProfileScreen() {
+    // Profile data (can be replaced with dynamic data)
+    val profileName = "Sumit Rai"
+    val profileUsername = "@sumitrai"
+
+    // Dummy profile picture (using default icon)
+    val profilePicture: ImageVector = Icons.Default.AccountCircle
+
+    // Dummy additional data
+    val totalPosts = 256
+    val totalFollowers = 1050
+    val totalFollowing = 320
+    val totalLove = 250
+    val totalSupporters = 56
+
+    // Dummy list of user posts (using default icons as placeholders)
+    val posts = listOf(
+        Icons.Default.AccountCircle,  // Placeholder icon
+        Icons.Default.AccountCircle,
+        Icons.Default.AccountCircle,
+        Icons.Default.AccountCircle,
+        Icons.Default.AccountCircle,
+        Icons.Default.AccountCircle,
+        Icons.Default.AccountCircle,
+        Icons.Default.AccountCircle,
+        Icons.Default.AccountCircle
+    )
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        item {
+            // Profile Picture and Name Section
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                // Profile picture (using a circular image)
+                Icon(
+                    imageVector = profilePicture,
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(16.dp)
+                        .clip(CircleShape)
+                )
+
+                // Profile Name and Username
+                Text(
+                    text = profileName,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        fontFamily = FontFamily.SansSerif
+                    )
+                )
+                Text(
+                    text = profileUsername,
+                    style = TextStyle(
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp
+                    )
+                )
+
+                // Edit Profile Button
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(onClick = { /* Handle Edit Profile */ }) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit Profile")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Edit Profile")
+                }
+
+                // Stats Section (Posts, Followers, Following)
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    ProfileStat(label = "Posts", value = totalPosts)
+                    ProfileStat(label = "Followers", value = totalFollowers)
+                    ProfileStat(label = "Following", value = totalFollowing)
+                }
+
+                // Additional dummy data (Love, Supporters)
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Love: $totalLove",
+                    style = TextStyle(
+                        color = Color.Green,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Total Supporters: $totalSupporters",
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                )
+            }
+        }
+
+        // Scrollable User Posts Section
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "All Posts",
+                style = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            )
+        }
+
+        // Horizontal Scrollable Grid of User Posts
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(posts.size) { index ->
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)  // Small padding between posts
+                            .aspectRatio(9f / 16f)  // Set the aspect ratio to 9:16
+                            .clip(RoundedCornerShape(8.dp))  // Rounded corners
+                            .background(Color.Gray.copy(alpha = 0.2f))
+                            .size(180.dp) // You can adjust the width and height as needed
+                    ) {
+                        Icon(
+                            imageVector = posts[index],
+                            contentDescription = "User Post",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileStat(label: String, value: Int) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = value.toString(),
+            style = TextStyle(
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = label,
+            style = TextStyle(
+                color = Color.Gray,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewDummyProfileScreen() {
+    DummyProfileScreen()
+}
+
 
 
 
