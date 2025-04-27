@@ -1,40 +1,34 @@
 package com.example.livestreamusingmvvm.ui.screen
 
-import android.content.Context
+
+import android.app.PictureInPictureParams
+import android.app.PictureInPictureUiState
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Rational
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import io.antmedia.webrtcandroidframework.api.IWebRTCClient
-import org.webrtc.SurfaceViewRenderer
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.sp
-
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Face
@@ -45,19 +39,37 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.razorpay.Checkout
+import com.razorpay.PaymentResultListener
+import io.antmedia.webrtcandroidframework.api.IWebRTCClient
+import org.json.JSONObject
+import org.webrtc.SurfaceViewRenderer
 
 
-import android.app.PictureInPictureParams
-import android.app.PictureInPictureUiState
-import android.os.Build
-import android.util.Rational
-import androidx.annotation.RequiresApi
-import org.webrtc.DataChannel
-import org.webrtc.MediaStream
-import org.webrtc.PeerConnection
-
-class LiveStreamPlayerComposeActivity : ComponentActivity() {
+class LiveStreamPlayerComposeActivity : ComponentActivity() , PaymentResultListener {
 
     private lateinit var surfaceViewRenderer: SurfaceViewRenderer
     private var webRTCClient: IWebRTCClient? = null
@@ -222,6 +234,9 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
                                     .size(50.dp)
                                     .background(Color.DarkGray, shape = CircleShape)
                                     .padding(12.dp)
+                                    .clickable {
+                                        startPayment()
+                                    }
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
@@ -352,9 +367,47 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
         isInPipMode = pipState.isTransitioningToPip
     }
 
+    private fun startPayment() {
+//        val checkout = Checkout()
+//
+//        // Set your test Key ID here
+//        checkout.setKeyID("rzp_test_J3xPLh7xTbCTjc") // Replace with your actual Test Key ID
+//
+//        try {
+//            // Create the options for the payment
+//            val options = JSONObject()
+//
+//            // Payment details
+//            options.put("name", "Your Company Name") // Your company name
+//            options.put("description", "Purchase Description") // Description of the product/service
+//            options.put("currency", "INR") // Currency INR
+//            options.put("amount", "1000") // Amount in paise (1000 paise = ₹10)
+//
+//            // Pre-fill customer information
+//            options.put("prefill.email", "customer@example.com") // Customer's email
+//            options.put("prefill.contact", "1234567890") // Customer's phone number
+//
+//            // Open Razorpay Checkout
+//            checkout.open(this, options)
+//
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://rzp.io/rzp/IKikUVX"))
+        startActivity(intent)
+
+    }
+
+    override fun onPaymentSuccess(p0: String?) {
+
+    }
+
+    override fun onPaymentError(p0: Int, p1: String?) {
+
+    }
+
+
 }
-
-
 
 
 

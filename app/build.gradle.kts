@@ -112,5 +112,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("com.razorpay:checkout:1.6.22")
+
 
 }
