@@ -58,11 +58,15 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
 
     private lateinit var surfaceViewRenderer: SurfaceViewRenderer
     private var webRTCClient: IWebRTCClient? = null
+  var   streamId =" "
+    private var monitoringRunnable: Runnable? = null
+
 
     private var isInPipMode by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        streamId = intent.getStringExtra("streamId") ?: "defaultStreamId"
         setContent {
             LiveStreamPlayerScreen()
         }
@@ -283,37 +287,50 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
                 .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")
                 .build()
 
-            webRTCClient?.play("stream1")
-            startStreamMonitoring(context)
+            webRTCClient?.play(streamId)
+           // startStreamMonitoring(context)
         }
     }
 
-    private fun startStreamMonitoring(context: Context) {
-        val handler = Handler(Looper.getMainLooper())
-        val checkInterval = 5000L
+//    private fun startStreamMonitoring(context: Context) {
+//        val handler = Handler(Looper.getMainLooper())
+//        val checkInterval = 5000L
+//
+//        monitoringRunnable = object : Runnable {
+//            override fun run() {
+//                if (webRTCClient == null || !webRTCClient!!.isStreaming(streamId)) {
+//                    stopStreamAndFinish(context)
+//                } else {
+//                    handler.postDelayed(this, checkInterval)
+//                }
+//            }
+//        }
+//
+//        handler.postDelayed(monitoringRunnable!!, checkInterval)
+//    }
 
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                if (webRTCClient == null || !webRTCClient!!.isStreaming("stream1")) {
-                    stopStreamAndFinish(context)
-                } else {
-                    handler.postDelayed(this, checkInterval)
-                }
-            }
-        }, checkInterval)
-    }
 
-    private fun stopStreamAndFinish(context: Context) {
-        webRTCClient?.stop("stream1")
-        Toast.makeText(context, "Live show ended by author", Toast.LENGTH_SHORT).show()
-        finish()
-    }
+//    private fun stopStreamAndFinish(context: Context) {
+//        if(webRTCClient!=null)
+//        webRTCClient?.stop(streamId)
+//        Toast.makeText(context, "Live show ended by author", Toast.LENGTH_SHORT).show()
+//        finish()
+//    }
 
     override fun onStop() {
         super.onStop()
-        webRTCClient?.stop("streamId_lmhdVQiRR")
+//        monitoringRunnable?.let {
+//            Handler(Looper.getMainLooper()).removeCallbacks(it)  // Stop the monitoring
+//        }
+//        stopStreamAndFinish(this)
+//        if(webRTCClient!=null)
+//        webRTCClient?.stop(streamId)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        //stopStreamAndFinish(this)
+    }
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

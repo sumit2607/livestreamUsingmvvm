@@ -67,10 +67,11 @@ import kotlinx.coroutines.delay
 class MainActivity : ComponentActivity() {
     private val viewModel: LiveStreamViewModel by viewModels()
     private var showSplash by mutableStateOf(true)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
+        // Retrieve the streamId from the Intent
         setContent {
             if (showSplash) {
                 SplashScreen {
