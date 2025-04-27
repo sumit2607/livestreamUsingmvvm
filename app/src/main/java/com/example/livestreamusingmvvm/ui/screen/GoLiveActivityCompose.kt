@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui.view.ui
+package com.example.livestreamusingmvvm.ui.screen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,10 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material.icons.filled.VideocamOff
 import androidx.compose.material.icons.filled.VolumeOff
@@ -37,7 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.livestreamusingmvvm.ui.view.ui.theme.LivestreamUsingmvvmTheme
+import com.example.livestreamusingmvvm.ui.screen.theme.LivestreamUsingmvvmTheme
 
 
 

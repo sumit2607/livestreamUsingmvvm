@@ -1,6 +1,5 @@
-package com.example.livestreamusingmvvm.ui.view.ui.theme
+package com.example.livestreamusingmvvm.ui.screen.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

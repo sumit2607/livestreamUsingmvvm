@@ -28,7 +28,7 @@
         android:theme="@style/Theme.LivestreamUsingmvvm"
         tools:targetApi="31">
         <activity
-            android:name=".ui.view.ui.LiveStreamPlayerComposeActivity"
+            android:name=".ui.screen.LiveStreamPlayerComposeActivity"
             android:exported="false"
             android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
@@ -36,12 +36,12 @@
             android:label="@string/title_activity_live_stream_player_compose"
             android:theme="@style/Theme.LivestreamUsingmvvm" />
         <activity
-            android:name=".ui.view.ui.GoLiveActivityCompose"
+            android:name=".ui.screen.GoLiveActivityCompose"
             android:exported="false"
             android:label="@string/title_activity_go_live_compose"
             android:theme="@style/Theme.LivestreamUsingmvvm" />
         <activity
-            android:name=".ui.view.ui.MainActivity"
+            android:name=".ui.screen.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

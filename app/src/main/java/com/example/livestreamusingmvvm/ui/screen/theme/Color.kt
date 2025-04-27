@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui.view.ui.theme
+package com.example.livestreamusingmvvm.ui.screen.theme
 
 import androidx.compose.ui.graphics.Color
 

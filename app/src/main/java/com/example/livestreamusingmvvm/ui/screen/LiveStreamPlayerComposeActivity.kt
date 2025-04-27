@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui.view.ui
+package com.example.livestreamusingmvvm.ui.screen
 
 import android.content.Context
 import android.os.Bundle
@@ -294,7 +294,7 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() {
 
         handler.postDelayed(object : Runnable {
             override fun run() {
-                if (webRTCClient == null || !webRTCClient!!.isStreaming("streamId_lmhdVQiRR")) {
+                if (webRTCClient == null || !webRTCClient!!.isStreaming("stream1")) {
                     stopStreamAndFinish(context)
                 } else {
                     handler.postDelayed(this, checkInterval)

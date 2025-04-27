@@ -6,65 +6,88 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.livestreamusingmvvm.model.LiveStream
 import com.example.livestreamusingmvvm.repository.LiveStreamRepository
+import com.example.livestreamusingmvvm.ui.intent.LiveStreamsIntent
+import com.example.livestreamusingmvvm.ui.state.LiveStreamsState
 import dagger.hilt.InstallIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class LiveStreamViewModel @Inject constructor(
     private val repository: LiveStreamRepository
 ) : ViewModel() {
 
-    // Live streams list for the list fragment
-    private val _liveStreams = MutableLiveData<List<LiveStream>?>()
-    val liveStreams: LiveData<List<LiveStream>?> = _liveStreams
+    private val _state = MutableStateFlow(LiveStreamsState())
+    val state: StateFlow<LiveStreamsState> = _state.asStateFlow()
 
-    // Live stream details for the player fragment
-    private val _liveStreamDetails = MutableLiveData<LiveStream?>()
-    val liveStreamDetails: LiveData<LiveStream?> = _liveStreamDetails
-
-    private val _errorState = MutableLiveData<String>()
-    val errorState: LiveData<String> = _errorState
-
-    private val _loadingState = MutableLiveData<Boolean>()
-    val loadingState: LiveData<Boolean> = _loadingState
-
-    // Fetch the list of live streams
-    fun fetchLiveStreams() {
-        viewModelScope.launch {
-            _loadingState.value = true
-            try {
-                val streams = repository.getLiveStreams()
-                if (streams != null && streams.isNotEmpty()) {
-                    _liveStreams.value = streams
-                } else {
-                    _errorState.value = "No live streams available."
-                }
-            } catch (e: Exception) {
-                _errorState.value = "Error fetching live streams: ${e.message}"
+    fun handleIntent(intent: LiveStreamsIntent) {
+        when (intent) {
+            is LiveStreamsIntent.FetchLiveStreams -> {
+                fetchLiveStreams()
             }
-            _loadingState.value = false
+            is LiveStreamsIntent.RefreshLiveStreams -> {
+                fetchLiveStreams(forceRefresh = intent.forceRefresh)
+            }
+            is LiveStreamsIntent.FetchLiveStreamDetails -> {
+                fetchLiveStreamDetails(intent.streamId)
+            }
         }
     }
 
-    // Fetch the details of a specific live stream by its ID
-    fun fetchLiveStreamDetails(streamId: String) {
-        _loadingState.value = true
+    private fun fetchLiveStreams(forceRefresh: Boolean = true) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
             try {
-                val streamDetails = repository.getLiveStreamDetails(streamId)
-                if (streamDetails != null) {
-                    _liveStreamDetails.value = streamDetails
+                val streams = repository.getLiveStreams()
+                if (!streams.isNullOrEmpty()) {
+                    _state.value = _state.value.copy(
+                        liveStreams = streams,
+                        isLoading = false,
+                        error = null
+                    )
                 } else {
-                    _errorState.value = "Live stream details not found."
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        error = "No live streams available."
+                    )
                 }
             } catch (e: Exception) {
-                _errorState.value = "Error fetching live stream details: ${e.message}"
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = "Error fetching live streams: ${e.message}"
+                )
             }
-            _loadingState.value = false
+        }
+    }
+
+    private fun fetchLiveStreamDetails(streamId: String) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
+            try {
+                val details = repository.getLiveStreamDetails(streamId)
+                if (details != null) {
+                    _state.value = _state.value.copy(
+                        liveStreamDetails = details,
+                        isLoading = false,
+                        error = null
+                    )
+                } else {
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        error = "Live stream details not found."
+                    )
+                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = "Error fetching live stream details: ${e.message}"
+                )
+            }
         }
     }
 }

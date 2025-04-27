@@ -1,4 +1,4 @@
-package com.example.livestreamusingmvvm.ui.view.ui
+package com.example.livestreamusingmvvm.ui.screen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -45,6 +45,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.livestreamusingmvvm.R
+import com.example.livestreamusingmvvm.ui.intent.LiveStreamsIntent
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,15 +75,13 @@ class MainActivity : ComponentActivity() {
     fun LiveStreamsListScreen() {
         val viewModel: LiveStreamViewModel = hiltViewModel()
 
-        val liveStreams by viewModel.liveStreams.observeAsState(emptyList())
-        val errorState by viewModel.errorState.observeAsState("")
-        val loadingState by viewModel.loadingState.observeAsState(false)
+        val state by viewModel.state.collectAsState()
 
         var selectedTab by remember { mutableStateOf(BottomNavItem.Home) }
 
-        LaunchedEffect(Unit) {
-            viewModel.fetchLiveStreams()
-        }
+//        LaunchedEffect(Unit) {
+//            viewModel.handleIntent(LiveStreamsIntent.FetchLiveStreams)
+//        }
 
         Scaffold(
             bottomBar = {
@@ -96,29 +95,38 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-
                 when (selectedTab) {
-                    BottomNavItem.Home -> liveStreams?.let { HomeScreen() }
-                    BottomNavItem.LiveNow -> liveStreams?.let { LiveNowScreen() }
+                    BottomNavItem.Home -> HomeScreen()
+                    BottomNavItem.LiveNow -> LiveNowScreen()
                     BottomNavItem.Profile -> ProfileScreen()
                     BottomNavItem.AllLiveShows -> {
-                        // Fetch the live stream data from ViewModel or any source
-                        liveStreams?.let { AllLiveShowsScreen(it, isLoading = false, onRefresh = {
-                        /* refresh logic */
-                            viewModel.fetchLiveStreams()
-                        }) }
+                        state.liveStreams?.let {
+                            AllLiveShowsScreen(
+                                it,
+                                isLoading = state.isLoading,
+                                onRefresh = {
+                                    viewModel.handleIntent(LiveStreamsIntent.RefreshLiveStreams())
+                                }
+                            )
+                        }
                     }
-
                 }
 
-                if (loadingState) {
-                    CircularProgressIndicator(
+                if (state.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+
+                state.error?.let { errorMessage ->
+                    Text(
+                        text = errorMessage,
+                        color = Color.Red,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
             }
         }
     }
+
 
     enum class BottomNavItem(val label: String, val icon: ImageVector) {
         Home("Home", Icons.Default.Home),
