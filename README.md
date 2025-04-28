@@ -125,7 +125,7 @@ Due to time constraints, there may be some bugs
 
 ## Screenshots
 
-Here are some screenshots of the cloned application:
+Here are some screenshots of application:
 
 ![Screenshot 1](https://github.com/sumit2607/livestreamUsingmvvm/blob/main_mvi_jetpack_di_final_2.0/f1.png)
 
