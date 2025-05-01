@@ -62,11 +62,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import io.antmedia.webrtcandroidframework.api.IWebRTCClient
 import org.json.JSONObject
 import org.webrtc.SurfaceViewRenderer
+import android.util.Log
+import com.google.firebase.events.Publisher
+import io.antmedia.webrtcandroidframework.core.WebRTCClient
+
+import java.io.IOException
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.webrtc.MediaStream
 
 
 class LiveStreamPlayerComposeActivity : ComponentActivity() , PaymentResultListener {
@@ -94,7 +106,6 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() , PaymentResultListe
         var messageText by remember { mutableStateOf("") }
 
         Box(modifier = Modifier.fillMaxSize()) {
-
             // WebRTC Video Surface
             AndroidView(
                 factory = { ctx ->
@@ -147,48 +158,70 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() , PaymentResultListe
                     }
                 }
 
-                // LIVE Info Top-Right
-                Row(
+                // LIVE Info + Join Co-host Top-Right
+                Column(
                     modifier = Modifier
                         .padding(16.dp)
-                        .align(Alignment.TopEnd)
-                        .background(Color.Red, shape = RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        .align(Alignment.TopEnd),
+                    horizontalAlignment = Alignment.End
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Live Icon",
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "LIVE",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                    Row(
+                        modifier = Modifier
+                            .background(Color.Red, shape = RoundedCornerShape(8.dp))
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = "Live Icon",
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "LIVE",
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Viewers Icon",
+                                tint = Color.White,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "200",
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Viewers Icon",
-                            tint = Color.White,
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "200",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = {
+                            //sendRequestToBecomeCoHost(streamId)
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Blue,
+                            contentColor = Color.White
+                        ),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Text("Join as Co-host", fontSize = 12.sp)
                     }
                 }
+
                 // Heart Icon
                 Icon(
                     imageVector = Icons.Default.Favorite,
@@ -299,16 +332,18 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() , PaymentResultListe
 
         // Start WebRTC when screen is ready
         LaunchedEffect(Unit) {
-            webRTCClient = IWebRTCClient.builder()
-                .setActivity(this@LiveStreamPlayerComposeActivity)
-                .addRemoteVideoRenderer(surfaceViewRenderer)
-                .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")
-                .build()
+                webRTCClient = IWebRTCClient.builder()
+                    .setActivity(this@LiveStreamPlayerComposeActivity)
+                    .addRemoteVideoRenderer(surfaceViewRenderer)
+                    .setServerUrl("wss://antmedia.workuplift.com:5443/WebRTCAppEE/websocket")
+                    .build()
 
-            webRTCClient?.play(streamId)
-            // startStreamMonitoring(context)
+                webRTCClient?.play(streamId)
         }
     }
+
+
+
 
 //    private fun startStreamMonitoring(context: Context) {
 //        val handler = Handler(Looper.getMainLooper())
@@ -359,6 +394,8 @@ class LiveStreamPlayerComposeActivity : ComponentActivity() , PaymentResultListe
             enterPictureInPictureMode(params)
         }
     }
+
+
 
 
     @RequiresApi(35)
